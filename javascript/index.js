@@ -250,9 +250,12 @@ function altaCarrito(id, stock, cantSolicitada) {
         carrito.push(objectCarrito)
         enviarAStorage(carrito, "carrito")
         mostrarCarrito()
+        mostrarToast()
     }
     else {
-        alert(`No disponemos de la cantidad solicitada, puede comprar un máximo de ${stock} unidades`)
+        // Si el stock es 0 sale por false
+        stock ? mostrarAlert("Stock insuficiente", `Disponemos de un máximo de ${stock} unidades`, "warning") : 
+        mostrarAlert("Sin stock", `No quedan más unidades del producto solicitado`, "warning")
     }
 }
 
@@ -264,10 +267,26 @@ function agregarRepetidoEnCarrito(id, stock, nuevaCantSolicitada) {
         carrito[posicionRepetido].cant = acumCantSolicitada
         enviarAStorage(carrito, "carrito")
         mostrarCarrito()
+        mostrarToast()
     }
     else {
-        alert(`No disponemos de la cantidad solicitada, puede comprar un máximo de ${stock} unidades`)
+        // Si el stock es 0 sale por false
+        stock ? mostrarAlert("Stock insuficiente", `Disponemos de un máximo de ${stock} unidades`, "warning") : 
+        mostrarAlert("Sin stock", `No quedan más unidades del producto solicitado`, "warning")
     }
+}
+
+function mostrarToast() {
+    Toastify({
+        text: "Producto agregado al carrito",
+        duration: 3000,
+        close: true,
+        gravity: "top",
+        position: "left",
+        style: {
+            background: "linear-gradient(to right, #00b09b, #96c93d)",
+        },
+    }).showToast();
 }
 
 function enviarAStorage(objeto, nombre) {
@@ -309,12 +328,22 @@ function mostrarCarrito() {   //Obtengo los atributos de los productos del catá
 }
 
 function finalizarCompra() {
-    // calcularTotalCompra()
+    calcularTotalCompra()
     domTotalCompra.innerText = "Importe Total Compra: "
+    mostrarAlert("Compra exitosa", "Muchas gracias por elegirnos", "success")
     actualizarStockCatalogo()
     vaciarCarrito()
     mostrarProductos(productos, "client")
     mostrarCarrito()
+}
+
+function mostrarAlert(titulo, msjSecundario, icono) {
+    console.log(`Compra exitosa, ${titulo}, ${msjSecundario}, ${icono}`)
+    Swal.fire(
+        titulo,
+        msjSecundario,
+        icono
+    )
 }
 
 function calcularTotalCompra() {
